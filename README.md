@@ -16,4 +16,4 @@
 3. Run on the Command Line, the arguments are "java HashSetTester <input.txt> <Initial Array Length>
 
 - Please note that if you wish to use as little memory as possible than make sure your initial array length is as large you want since that will mean less upsizing, which means less used memory
-- Also, currently on larger input files this can get quite slow, I'm talking 50 Million Words, so please bare in mind, additionally your heap space might run out for larger files as well.
+- Please note that currently you cannot insert additional strings into the hash set from the command line or by additional files. Additionally, the feature to retrieve Strings from the set will be implemented soon.
