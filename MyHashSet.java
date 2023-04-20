@@ -16,7 +16,7 @@ public class MyHashSet implements HS_Interface
 		System.out.format("IN CONSTRUCTOR: INITIAL TABLE LENGTH=%d RESIZE WILL OCCUR EVERY TIME AVE BUCKET LENGTH EXCEEDS %d\n", numBuckets, MAX_ACCEPTABLE_AVE_BUCKET_SIZE );
 	}
 
-    private boolean insertInOrder(String key, Node[] arr)//complete
+    private boolean insertInOrder(String key, Node[] arr)
     {
         int index = hashOf(key,numBuckets);
         Node cur = arr[index];
@@ -25,22 +25,20 @@ public class MyHashSet implements HS_Interface
             arr[index] = new Node(key);
             return true;
         }
-
+        if (cur.data.equals(key)) return false;
         while(cur.next!=null && cur.next.data.compareTo(key)<0) // stop if null OR compareTo is greater than 0
             {
-                if (cur.data.equals(key)) return false;
                 cur = cur.next;
             }
-
-        if (cur==null || key.equals(cur.data))
+    
+        if (cur.next!= null && key.equals(cur.next.data))
             return false;
         cur.next = new Node(key,cur.next);
         return true;
     }
 
-	public boolean add( String key )//complete
+	public boolean add( String key )
 	{
-        if (contains(key)) return false;
         if(!(insertInOrder(key, bucketArray)))
             return false;
         ++size;
@@ -80,35 +78,36 @@ public class MyHashSet implements HS_Interface
                 cur = cur.next;
             }
         }
-
 		bucketArray = biggerArray;
-	} // END OF UPSIZE & REHASH
+	}
 
     private boolean removeInOrder(String key)
     {
-        int hIndex = hashOf(key,numBuckets);
-        Node cur = bucketArray[hIndex];
+        int index = hashOf(key,numBuckets);
+        Node cur = bucketArray[index];
+
+        if (cur==null) 
+            return false;
+
         if (cur.data.equals(key))
         {
-            bucketArray[hIndex] = cur.next;
+            bucketArray[index] = cur.next;
             return true;
         }
 
         while(cur.next!=null && cur.next.data.compareTo(key)<0)
             cur = cur.next;
 
-        if (cur.next==null || !(cur.next.data.equals(key)))
+        if (cur.next==null || !(cur.next.data.compareTo(key)<=0))
             return false;
 
         cur.next = cur.next.next;
         return true;
     }
 
-
+    // NEXT PLAN: ADD IN A GET METHOD AND A RETRIEVE LIST METHOD
 	public boolean remove( String key )
 	{
-		if (!(contains(key)))
-            return false;//Key was already removed
         return removeInOrder(key);
 	}
 	public boolean isEmpty()
@@ -140,8 +139,8 @@ public class MyHashSet implements HS_Interface
 		for (int i =0; i<key.length(); i++)
 		{
 			int ascii = key.charAt(i);
-			total = total*11<<1;
-			total = (total + ascii * 17) ^ ascii;
+			total = total*17;
+			total = (total + ascii * 23)/5;
 		}
 		return Math.abs(total % numBuckets);
 	}
