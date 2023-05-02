@@ -8,6 +8,8 @@ public interface HS_Interface
 	public boolean add( String key ); // dupes must be rejected and return false
    
 	public boolean remove( String key ); // if not found return false else remove & return true
+
+	public String get(int index); // Takes in a hashed key, and returns the linked list headed @ that array index
    
 	public boolean contains( String key ); // true if foound false if not
    

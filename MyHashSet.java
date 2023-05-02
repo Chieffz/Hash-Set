@@ -37,20 +37,6 @@ public class MyHashSet implements HS_Interface
         return true;
     }
 
-	public boolean add( String key )
-	{
-        if(!(insertInOrder(key, bucketArray)))
-            return false;
-        ++size;
-        if ( size > MAX_ACCEPTABLE_AVE_BUCKET_SIZE * this.numBuckets)
-            upSize_ReHash_AllKeys();
-        return true;
-	}
-	public boolean contains( String key )
-	{	
-        return search(key) != null;
-	}
-
     private Node search(String key)
     {
         int keyHash=hashOf(key,numBuckets);
@@ -105,7 +91,34 @@ public class MyHashSet implements HS_Interface
         return true;
     }
 
-    // NEXT PLAN: ADD IN A GET METHOD AND A RETRIEVE LIST METHOD
+        public String get(int index)
+    {
+        Node cur = bucketArray[index];
+        if (cur==null) return null;
+        String returnString = String.format("%d:", index);
+        while (cur.next!=null)
+        {
+            returnString += " " + cur.data + " ";
+        }
+        return returnString;
+
+    }
+
+// Linked List Interface Functions
+	public boolean add( String key )
+	{
+        if(!(insertInOrder(key, bucketArray)))
+            return false;
+        ++size;
+        if ( size > MAX_ACCEPTABLE_AVE_BUCKET_SIZE * this.numBuckets)
+            upSize_ReHash_AllKeys();
+        return true;
+	}
+
+	public boolean contains( String key )
+	{	
+        return search(key) != null;
+	}
 	public boolean remove( String key )
 	{
         return removeInOrder(key);
