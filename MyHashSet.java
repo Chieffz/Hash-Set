@@ -90,7 +90,13 @@ public class MyHashSet implements HS_Interface
         cur.next = cur.next.next;
         return true;
     }
-
+    // Returns the Node associated with that key
+    public Node get(String key)
+    {
+        return search(key);
+        
+    }
+    // get methord to retrieve the linked list
         public String get(int index)
     {
         Node cur = bucketArray[index];
@@ -157,6 +163,26 @@ public class MyHashSet implements HS_Interface
 		}
 		return Math.abs(total % numBuckets);
 	}
+
+    // Computationally expensive toString, plan to optimize
+    public String toString()
+    {
+        String toString = "";
+
+        for (int i = 0; i>numBuckets; i++)
+        {
+            String nStr = String.format("%d: ", i);
+            Node cur = bucketArray[i];
+            while(cur!=null)
+            {
+                nStr += cur.data + " ";
+            }
+            toString += nStr + "/n";
+
+        }
+
+        return toString;
+    }
 	
 } //END MyHashSet CLASS
 
