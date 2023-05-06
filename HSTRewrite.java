@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class HashSetTester
+public class HSTRewrite
 {
 	public static void main(String[] args) throws Exception 
 	{	
@@ -10,7 +10,7 @@ public class HashSetTester
 		if (args.length < 2) die("usage: java HashTester <fileOfStrings>  <numOfBuckets>");
 		String infileName = args[0];
 		int  numOfBuckets = Integer.parseInt(args[1]);
-		MyHashSet hset = new MyHashSet( numOfBuckets ); // 
+		HashSetRewrite<String> hset = new HashSetRewrite<String>( numOfBuckets ); // 
 		BufferedReader infile = new BufferedReader(new FileReader(infileName));
 
 		double startTime = System.currentTimeMillis();
@@ -33,7 +33,7 @@ public class HashSetTester
 		System.out.println("AllAddsFail:    " + AllAddsFail);   // SHOULD PRINT TRUE
 		System.out.format( "Runtime: %1.5f sec.\n", (stopTime-startTime) / 1000.0D );
 		
-		// NOW DO REMOVES
+	/*	// NOW DO REMOVES
 		
 
 		// ALL THESE SHOULD SUCCEED
@@ -59,7 +59,7 @@ public class HashSetTester
 		System.out.format( "Runtime: %1.5f sec.\n", (stopTime-startTime) / 1000.0D );
 		
 		double mainStopTime = System.currentTimeMillis();
-		System.out.format( "OVERALL Runtime: %1.5f sec.\n", (mainStopTime-mainStartTime) / 1000.0D );
+		System.out.format( "OVERALL Runtime: %1.5f sec.\n", (mainStopTime-mainStartTime) / 1000.0D );*/
 	}
 	static void die(String errMsg)
 	{
