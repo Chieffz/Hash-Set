@@ -1,5 +1,7 @@
 import java.util.*;
 
+import javax.print.attribute.standard.MediaSize.NA;
+
 public class HashSetRewrite<T extends Comparable<T>> implements HS_InterfaceRewrite<T>
 {
     private ArrayList<Node<T>> bucketArr;
@@ -13,15 +15,20 @@ public class HashSetRewrite<T extends Comparable<T>> implements HS_InterfaceRewr
         this.numBuckets = numBuckets;
         size=0;
         bucketArr = new ArrayList<Node<T>>(numBuckets);
+        for (int i = 0; i<numBuckets; i++)
+        {
+            bucketArr.add(i, null);
+        }
     }
 
     // HashSet Linked List Functions
 
 	public boolean add( T key ) // dupes must be rejected and return false
     {
-        if (!(insertInOrder(key,bucketArr))) return false;
-        size++;
-        if (size > AVG_BUCKET_LENGTH * this.numBuckets)
+        if(!(insertInOrder(key, bucketArr)))
+            return false;
+        ++size;
+        if ( size > AVG_BUCKET_LENGTH * this.numBuckets)
             upSizeHashSet();
         return true;
     }
@@ -76,7 +83,7 @@ public class HashSetRewrite<T extends Comparable<T>> implements HS_InterfaceRewr
         while (cur.next!=null && cur.next.data.compareTo(key)<0)
             cur = cur.next;
 
-        if (cur.next==null && cur.next.data.equals(key)) return false;
+        if (cur.next!=null && key.equals(cur.next.data)) return false;
         cur.next = new Node<T>(key,cur.next);
         return true;
     }
@@ -101,10 +108,14 @@ public class HashSetRewrite<T extends Comparable<T>> implements HS_InterfaceRewr
     {
         System.out.format("KEYS HASHED=%10d UPSIZING TABLE FROM %8d to %8d REHASHING ALL KEYS\n",
 						   size, bucketArr.size(), bucketArr.size()*2  );
-        ArrayList<Node<T>> nArr = new ArrayList<Node<T>>(bucketArr.size()*2);
-        this.numBuckets = nArr.size();
+        this.numBuckets = bucketArr.size()*2;
+        ArrayList<Node<T>> nArr = new ArrayList<Node<T>>(numBuckets);
+        for (int i = 0; i<numBuckets; i++)
+        {
+            nArr.add(i, null);
+        }
 
-        for (int i = 0; i>bucketArr.size(); i++)
+        for (int i = 0; i<bucketArr.size(); i++)
         {
             Node<T> cur = nArr.get(i);
 
