@@ -25,7 +25,9 @@ public class HSTRewrite
 		boolean AllAddsFail = true;  // they SHOULD all fail
 		while (infile.ready()) 
 			if ( hset.add(infile.readLine()) ) 
-					AllAddsFail = false;  // THIS IS BAD!
+					{
+						AllAddsFail = false;  // THIS IS BAD!
+					}
 		infile.close();
 
 		double stopTime = System.currentTimeMillis();
@@ -33,7 +35,7 @@ public class HSTRewrite
 		System.out.println("AllAddsFail:    " + AllAddsFail);   // SHOULD PRINT TRUE
 		System.out.format( "Runtime: %1.5f sec.\n", (stopTime-startTime) / 1000.0D );
 		
-	/*	// NOW DO REMOVES
+  // NOW DO REMOVES
 		
 
 		// ALL THESE SHOULD SUCCEED
@@ -59,7 +61,7 @@ public class HSTRewrite
 		System.out.format( "Runtime: %1.5f sec.\n", (stopTime-startTime) / 1000.0D );
 		
 		double mainStopTime = System.currentTimeMillis();
-		System.out.format( "OVERALL Runtime: %1.5f sec.\n", (mainStopTime-mainStartTime) / 1000.0D );*/
+		System.out.format( "OVERALL Runtime: %1.5f sec.\n", (mainStopTime-mainStartTime) / 1000.0D );
 	}
 	static void die(String errMsg)
 	{

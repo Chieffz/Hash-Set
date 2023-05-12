@@ -5,6 +5,11 @@
 - A Data Structure that allows the user to hash any n amount of words into an array
 - Uses Closed Addressing to store hashed words and the linked lists are set to be a maximum average length of 20 before being upsized
 
+# Planned Features
+- Generic Implementation is currently in progress to allow for this Hashset to not only hash strings but any data type. Only if that data type extends Comparable and is easily comparable
+- A more streamlined/user friendly tester, currently the tester is pretty barebones and doesn't allow for more custom testing. I plan on changing that to allow for more dynamic testing
+- Making the algorithm faster, it's not as fast as I'd currently like on some machines. It might be due to the fact I might be doing too much redundent operations & need to implement hueristics.
+
 # Installation
 
 1. Clone or Download the Repository

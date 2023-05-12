@@ -1,10 +1,8 @@
 import java.util.*;
 
-import javax.print.attribute.standard.MediaSize.NA;
-
 public class HashSetRewrite<T extends Comparable<T>> implements HS_InterfaceRewrite<T>
 {
-    private ArrayList<Node<T>> bucketArr;
+    private GenericLists<Node<T>> bucketArr;
     private int numBuckets;
     private int size;
 
@@ -14,18 +12,14 @@ public class HashSetRewrite<T extends Comparable<T>> implements HS_InterfaceRewr
     {
         this.numBuckets = numBuckets;
         size=0;
-        bucketArr = new ArrayList<Node<T>>(numBuckets);
-        for (int i = 0; i<numBuckets; i++)
-        {
-            bucketArr.add(i, null);
-        }
+        bucketArr = new GenericLists<Node<T>>(numBuckets);
     }
 
     // HashSet Linked List Functions
 
 	public boolean add( T key ) // dupes must be rejected and return false
     {
-        if(!(insertInOrder(key, bucketArr)))
+        if (!(insertInOrder(key, bucketArr)))
             return false;
         ++size;
         if ( size > AVG_BUCKET_LENGTH * this.numBuckets)
@@ -35,7 +29,10 @@ public class HashSetRewrite<T extends Comparable<T>> implements HS_InterfaceRewr
    
 	public boolean remove( T key ) // if not found return false else remove & return true
     {
-        return false;
+        if (!(removeInOrder(key)))
+            return false;
+        size--;
+        return true;
     }
 
 	public T get(int index) // Takes in a hashed key, and returns the linked list headed @ that array index
@@ -45,22 +42,52 @@ public class HashSetRewrite<T extends Comparable<T>> implements HS_InterfaceRewr
    
 	public boolean contains( T key ) // true if foound false if not
     {
-        return false;
+        return search(key) != null;
 
     }
-   
-	public boolean isEmpty() // use the call to size
+
+    public Node<T> search(T key) // Searching to see if the key exists in the set or not
     {
-        return false;
+        int index = hashOf(key,numBuckets);
+
+        Node<T> cur = bucketArr.get(index);
+        while (cur.next!=null && !(cur.data.equals(key)))
+            cur = cur.next;
+        
+        if (cur.next!=null && cur.data.equals(key))
+            return cur;
+        return null;
+
+    }
+
+    public ArrayList<T> search(int index) // Searching to see if an array index is null or not, if not, returns the list as an ArrayList
+    {
+        Node<T> cur = bucketArr.get(index);
+        if (cur==null) return null;
+
+        ArrayList<T> list = new ArrayList<T>();
+        while (cur.next!=null)
+        {
+            list.add(cur.data);
+            cur = cur.next;
+
+        }
+
+        return list;
+    }
+   
+	public boolean isEmpty()
+    {
+        return size() == 0;
 
     }
    
-	public int size() // number of keys currently stored in the container
+	public int size()
     {
         return size;
     }
    
-   	public void clear()
+   	public void clear() // Will essentially delete all hashed elements and downsize the bucketArray to the original size
     {
         return;
     }
@@ -69,7 +96,7 @@ public class HashSetRewrite<T extends Comparable<T>> implements HS_InterfaceRewr
 
     // Hash Set Data Maniuplation Functions
 
-    private boolean insertInOrder(T key, ArrayList<Node<T>> arr) // Returns True IF insertions was sucessful OR no duplications were detected, returns false IF insertion was unsuccessful OR dupes were found
+    private boolean insertInOrder(T key, GenericLists<Node<T>> arr) // Returns True IF insertions was sucessful OR no duplications were detected, returns false IF insertion was unsuccessful OR dupes were found
     {
         int index = hashOf(key, numBuckets);
         Node<T> cur = arr.get(index);
@@ -79,19 +106,44 @@ public class HashSetRewrite<T extends Comparable<T>> implements HS_InterfaceRewr
                 arr.set(index,new Node<T>(key));
                 return true;
             }
-        if (cur.data.equals(key)) return false;
+        if (cur.data.equals(key))
+            return false;
+            
         while (cur.next!=null && cur.next.data.compareTo(key)<0)
             cur = cur.next;
-
-        if (cur.next!=null && key.equals(cur.next.data)) return false;
+        if (cur.next!=null && cur.next.data.equals(key))
+        {
+            return false;
+        }
         cur.next = new Node<T>(key,cur.next);
+        return true;
+    }
+
+    private boolean removeInOrder(T key) // Returns True IF deletion was sucessful OR no duplications were detected, returns false IF deletion was unsuccessful OR dupes were found
+    {
+        int index = hashOf(key,numBuckets);
+        Node<T> cur = bucketArr.get(index);
+        if (cur==null)
+        {
+            return false;
+        }
+
+        if (cur.data.equals(key))
+        {
+            bucketArr.set(index,cur.next);
+            return true;
+        }
+        while (cur.next!=null && cur.next.data.compareTo(key)<0)
+            cur = cur.next;
+        if (cur.next==null || cur.next.data.compareTo(key)>0) return false;
+        cur.next = cur.next.next;
         return true;
     }
 
 
     // Hashing Functions
 
-    private int hashOf(T key, int numBuckets)
+    private int hashOf(T key, int numBuckets) // Actual Hashing function, returns a int for a array index position for the key to be addressed to
     {
 		int total = 0;
         String keyStr = key.toString();
@@ -104,16 +156,12 @@ public class HashSetRewrite<T extends Comparable<T>> implements HS_InterfaceRewr
 		return Math.abs(total % numBuckets);
     }
 
-    private void upSizeHashSet()
+    private void upSizeHashSet() // We're getting a bunch of null curs, maybe we're making all indexes null on WRONG array
     {
         System.out.format("KEYS HASHED=%10d UPSIZING TABLE FROM %8d to %8d REHASHING ALL KEYS\n",
 						   size, bucketArr.size(), bucketArr.size()*2  );
         this.numBuckets = bucketArr.size()*2;
-        ArrayList<Node<T>> nArr = new ArrayList<Node<T>>(numBuckets);
-        for (int i = 0; i<numBuckets; i++)
-        {
-            nArr.add(i, null);
-        }
+        GenericLists<Node<T>> nArr = new GenericLists<Node<T>>(numBuckets);
 
         for (int i = 0; i<bucketArr.size(); i++)
         {
@@ -139,4 +187,30 @@ class Node<T>
         this.data = data;
     }
     public Node(T data) {this(data,null);}
+}
+
+class GenericLists<D>
+{
+    private Object[] Arr;
+
+    GenericLists(int size)
+    {
+        Arr = new Object[size];
+    }
+
+    @SuppressWarnings("unchecked")
+    public D get(int index)
+    {
+        return (D)Arr[index];
+    }
+
+    public void set(int index, D head)
+    {
+        Arr[index] = head;
+    }
+
+    public int size()
+    {
+        return Arr.length;
+    }
 }
